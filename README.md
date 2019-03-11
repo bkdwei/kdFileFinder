@@ -1,0 +1,2 @@
+# kdFileFinder
+使用python3和pyqt5开发的，支持vim快捷键和鼠标导航的开源文件管理器
