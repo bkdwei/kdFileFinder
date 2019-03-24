@@ -16,76 +16,56 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QStackedWidget" name="stackedWidget">
-      <widget class="QWidget" name="left_page">
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <layout class="QHBoxLayout" name="hl_bookmark"/>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="le_path">
-          <property name="text">
-           <string>/tmp</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QListView" name="lw_main"/>
-        </item>
-       </layout>
+     <widget class="QLineEdit" name="le_path">
+      <property name="text">
+       <string>/tmp</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QListWidget" name="lw_toolbar">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>30</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>工具栏</string>
+        </property>
+       </item>
       </widget>
-      <widget class="QWidget" name="main_page">
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QPushButton" name="pb_root">
-              <property name="text">
-               <string>/</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pb_home">
-              <property name="text">
-               <string>/home/bkd</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pb_tmp">
-              <property name="text">
-               <string>/tmp</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QListWidget" name="lw1">
-              <property name="styleSheet">
-               <string notr="true">selection-background-color: rgb(115, 210, 22);
-alternate-background-color: rgb(252, 233, 79);</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QListWidget" name="lw2"/>
-            </item>
-            <item>
-             <widget class="QListWidget" name="lw3"/>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-       </layout>
+      <widget class="QListWidget" name="lw_sidebar">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>侧边栏</string>
+        </property>
+       </item>
       </widget>
-      <widget class="QWidget" name="right_page"/>
+      <widget class="QListView" name="lw_main"/>
      </widget>
     </item>
    </layout>

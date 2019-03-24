@@ -21,8 +21,8 @@ class kdFileFinder(QMainWindow):
         self.lw_main.clicked.connect(self.on_lw_main_clicked)
         self.lw_main.doubleClicked.connect(self.on_lw_main_dbclicked)
         self.lw_main.installEventFilter(self)
-        self.fileSystemModel.setReadOnly(True)
         self.fileSystemModel = QFileSystemModel(self.lw_main)
+        self.fileSystemModel.setReadOnly(True)
         root = self.fileSystemModel.setRootPath("/tmp")
         self.lw_main.setModel(self.fileSystemModel)
         self.lw_main.setRootIndex(root)
@@ -31,14 +31,6 @@ class kdFileFinder(QMainWindow):
         
         #TODO for test
         self.qdir = QDir()
-        comboBox1 = QComboBox()
-        comboBox1.addItem("/tmp")
-        comboBox1.addItem("/etc")
-        self.hl_bookmark.addWidget(comboBox1)
-        comboBox2 = QComboBox()
-        comboBox2.addItem("/usr")
-        comboBox2.addItem("/home/bkd")
-        self.hl_bookmark.addWidget(comboBox2)
 
     @pyqtSlot()
     def on_pb_load_path_clicked(self):
