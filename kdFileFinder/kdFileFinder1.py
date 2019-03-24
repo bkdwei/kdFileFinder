@@ -35,7 +35,7 @@ class kdFileFinder(QMainWindow):
         print(self.frameGeometry())
         pos = self.frameGeometry()
         self.sub.move(pos.x() + pos.width(),(self.win_height - pos.height())/2)
-        
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

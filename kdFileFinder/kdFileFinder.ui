@@ -17,6 +17,20 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
+      <widget class="QWidget" name="left_page">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <layout class="QHBoxLayout" name="hl_bookmark"/>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="le_path">
+          <property name="text">
+           <string>/tmp/test</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="main_page">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -49,7 +63,12 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QListWidget" name="lw1"/>
+             <widget class="QListWidget" name="lw1">
+              <property name="styleSheet">
+               <string notr="true">selection-background-color: rgb(115, 210, 22);
+alternate-background-color: rgb(252, 233, 79);</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QListWidget" name="lw2"/>
@@ -63,8 +82,50 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="left_page"/>
       <widget class="QWidget" name="right_page"/>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListWidget" name="lw_main">
+      <property name="tabKeyNavigation">
+       <bool>true</bool>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="movement">
+       <enum>QListView::Static</enum>
+      </property>
+      <property name="flow">
+       <enum>QListView::LeftToRight</enum>
+      </property>
+      <property name="gridSize">
+       <size>
+        <width>200</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="viewMode">
+       <enum>QListView::IconMode</enum>
+      </property>
+      <property name="modelColumn">
+       <number>0</number>
+      </property>
+      <property name="uniformItemSizes">
+       <bool>false</bool>
+      </property>
+      <property name="batchSize">
+       <number>100</number>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+      <property name="selectionRectVisible">
+       <bool>false</bool>
+      </property>
      </widget>
     </item>
    </layout>
