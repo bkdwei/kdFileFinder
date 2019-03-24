@@ -25,9 +25,12 @@
         <item>
          <widget class="QLineEdit" name="le_path">
           <property name="text">
-           <string>/tmp/test</string>
+           <string>/tmp</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="QListView" name="lw_main"/>
         </item>
        </layout>
       </widget>
@@ -83,49 +86,6 @@ alternate-background-color: rgb(252, 233, 79);</string>
        </layout>
       </widget>
       <widget class="QWidget" name="right_page"/>
-     </widget>
-    </item>
-    <item>
-     <widget class="QListWidget" name="lw_main">
-      <property name="tabKeyNavigation">
-       <bool>true</bool>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>20</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="movement">
-       <enum>QListView::Static</enum>
-      </property>
-      <property name="flow">
-       <enum>QListView::LeftToRight</enum>
-      </property>
-      <property name="gridSize">
-       <size>
-        <width>200</width>
-        <height>50</height>
-       </size>
-      </property>
-      <property name="viewMode">
-       <enum>QListView::IconMode</enum>
-      </property>
-      <property name="modelColumn">
-       <number>0</number>
-      </property>
-      <property name="uniformItemSizes">
-       <bool>false</bool>
-      </property>
-      <property name="batchSize">
-       <number>100</number>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-      <property name="selectionRectVisible">
-       <bool>false</bool>
-      </property>
      </widget>
     </item>
    </layout>
