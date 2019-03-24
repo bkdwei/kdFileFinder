@@ -5,13 +5,14 @@ Created on 2019年3月7日
 '''
  # -*- coding:utf-8 -*-
 
+import os
 from os.path import join,dirname,isdir,isfile
 import sys
 import subprocess
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot,QDir,QFile,QSize,Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import  QMainWindow,QApplication,QDesktopWidget,QListWidgetItem,QComboBox,QStyleOptionViewItem,QStyledItemDelegate
+from PyQt5.QtWidgets import  QMainWindow,QApplication,QDesktopWidget,QListWidgetItem,QComboBox,QStyleOptionViewItem,QStyledItemDelegate,QFileSystemModel
 from .fileutil import get_file_realpath
 
 class ItemDelegate(QStyledItemDelegate):
@@ -51,9 +52,15 @@ class kdFileFinder(QMainWindow):
         
         self.dir_icon = QIcon(get_file_realpath("21.png"))
         self.delegate = ItemDelegate()
-        self.lw_main.setItemDelegate(self.delegate)
+#         self.lw_main.setItemDelegate(self.delegate)
 #         self.lw_main.setItemAlignment(Qt.AlignLeft)
 #         self.lw_main.setStyleSheet("QListWidget{min-width: 100px; border:none; border-top:2px solid #4da8e8; color:#ffffff; margin: 0 0 0 0; padding: 0 0 0 0; text-align:center;} QListWidget::item{border-bottom: 2px solid #4da8e8; padding:15px 25px 15px 25px; margin: 0 0 0 0; text-align: center; background:#399ee5; color:#ffffff;} QListWidget::item:hover{border:none; background:#45c8dc; font-weight:bold;} QListWidget::item:selected{border:none; border-left: 6px solid #fa7064; background:#ffffff; color:#fa7064; font-weight:bold;} QListWidget::icon{margin: 0 0 0 0; padding: 0 20px 0 0;} QLabel{background:transparent; border: none; font-size: 15pt; color:#ffffff; font-family:'Segoe UI';}")
+
+        self.fileSystemModel = QFileSystemModel(self.lw_main)
+        self.fileSystemModel.setReadOnly(True)
+        self.lw_main.setModel(self.fileSystemModel)
+        root = self.fileSystemModel.setRootPath("/tmp")
+        self.lw_main.setRootIndex(root)
 
     @pyqtSlot()
     def on_pb_root_clicked(self):
@@ -135,33 +142,38 @@ class kdFileFinder(QMainWindow):
     def on_pb_load_path_clicked(self):
 #         self.lw_main.setIconSize(QSize(20, 20)); 
 #         self.lw_main.setGridSize(QSize(200, 20)); 
-        cur_dir = self.le_path.text()
-        self.qdir.setPath(cur_dir)
-        files = self.qdir.entryList()
-        for f in files:
-            if f.startswith(".") :
-                files.remove(f)
-        self.lw_main.clear()
-        files.sort()
-        for file in files:
-            if isdir(join(cur_dir,file)):
-                print(file + " is a dir")
-                list_item = QListWidgetItem(file)
-                list_item.setIcon(self.dir_icon)
-                list_item.setTextAlignment(Qt.AlignVCenter)
-                self.lw_main.addItem(list_item)
-            else :
-                self.lw_main.addItem(file)
+#         cur_dir = self.le_path.text()
+#         self.qdir.setPath(cur_dir)
+#         files = self.qdir.entryList()
+#         for f in files:
+#             if f.startswith(".") :
+#                 files.remove(f)
+#         self.lw_main.clear()
+#         files.sort()
+#         for file in files:
+#             if isdir(join(cur_dir,file)):
+#                 print(file + " is a dir")
+#                 list_item = QListWidgetItem(file)
+#                 list_item.setIcon(self.dir_icon)
+#                 list_item.setTextAlignment(Qt.AlignVCenter)
+#                 self.lw_main.addItem(list_item)
+#             else :
+#                 self.lw_main.addItem(file)
+        print(self.le_path.text())
+        root = self.fileSystemModel.setRootPath(self.le_path.text())
+        self.lw_main.setRootIndex(root)
+        print("bkd")
                 
     
     def eventFilter(self, qobject, qevent):
         qtype = qevent.type()
-        print("qtype",qtype)
+#         print("qtype",qtype)
+#         print("qobject",qobject)
         if qtype == 82 :
-            i = self.lw_main.itemAt(qevent.pos())
+            i = self.lw_main.indexAt(qevent.pos())
             
-            if i :
-                print("鼠标在:" + i.text())
+            if i.isValid() :
+                print("鼠标在:" ,i.isValid())
             else:
                 paren_dir = dirname(self.le_path.text()) 
                 print("单击了右键" + paren_dir)
@@ -176,15 +188,25 @@ class kdFileFinder(QMainWindow):
         return False
     @pyqtSlot()
     def on_lw_main_clicked(self):
-        cur_item = self.lw_main.currentItem().text()
+        cur_item_index = self.lw_main.currentIndex()
+        cur_item1 = self.fileSystemModel.itemData(cur_item_index)
+        cur_item = cur_item1[0]
+        print("cur_item",cur_item1)
         sub_path = join(self.le_path.text(),cur_item)
-        print("hihi" + sub_path)
-        if isdir(sub_path) :
+        print("sub_path:" + sub_path)
+        if os.path.isdir(str(sub_path)) :
+            print(sub_path + "is a dir")
             self.le_path.setText(sub_path)
             self.on_pb_load_path_clicked()
+        elif os.path.isfile(str(sub_path)):
+            print(sub_path + " is a file")
+        else:
+            print(type(sub_path))
     @pyqtSlot()
     def on_lw_main_dbclicked(self):
-        cur_item = self.lw_main.currentItem().text()
+        cur_item_index = self.lw_main.currentIndex()
+        cur_item1 = self.fileSystemModel.itemData(cur_item_index)
+        cur_item = cur_item1[0]
         sub_path = join(self.le_path.text(),cur_item)
         print("hihidb" + sub_path)
         if isfile(sub_path) :
