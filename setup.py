@@ -18,7 +18,7 @@ setup(
     maintainer_email="bkdwei@163.com",
     long_description=long_description,
 #     long_description_content_type="text/markdown",
-    url="https://github.com/bkdwei/kdLaunchPad",
+    url="https://github.com/bkdwei/kdFileFinder",
     license="GPLv3+",
     platforms=["any"],
     
@@ -37,7 +37,7 @@ setup(
         "Environment :: X11 Applications :: Qt",
         "Intended Audience :: End Users/Desktop",
         "Natural Language :: Chinese (Simplified)",
-        "Topic :: Internet :: File Transfer Protocol (FTP)",
+        "Topic :: System :: Filesystems",
         "Programming Language :: Python :: 3",
         " License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: POSIX",
