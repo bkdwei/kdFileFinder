@@ -8,8 +8,8 @@ Created on 2019年3月7日
 
 import sys
 import subprocess
-from os.path import join,dirname,isdir,isfile, basename
-from os import system
+from os.path import join,dirname,isdir,isfile, basename 
+from os import system, startfile
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot,QDir,Qt
 from PyQt5.QtGui import QIcon
@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import  QMainWindow,QApplication,QFileSystemModel,QAction,Q
 from .fileutil import get_file_realpath
 from . import kdconfig
 from . import bookmark
+from _ast import Try
 
 class kdFileFinder(QMainWindow):
     def __init__(self):
@@ -30,7 +31,9 @@ class kdFileFinder(QMainWindow):
         self.fileSystemModel.setReadOnly(True)
         self.fileFilter =self.fileSystemModel.filter()
         self.fileFilter_hidden = None
-        root = self.fileSystemModel.setRootPath(QDir.home().absolutePath())
+        home_path = QDir.home().absolutePath()
+        self.le_path.setText(home_path)
+        root = self.fileSystemModel.setRootPath(home_path)
         self.lw_main.setModel(self.fileSystemModel)
         self.lw_main.setRootIndex(root)
         self.lw_main.setWrapping(True)
@@ -42,25 +45,37 @@ class kdFileFinder(QMainWindow):
         self.init_bookmark()
         self.session_list = set()
         self.last_open_file = set()
+        
+        self.isWindowsOS = sys.platform =="win32"
     def init_bookmark(self):
         self.lw_sidebar.clear()
         if self.bookmark_list:
             for b in self.bookmark_list:
-                self.add_bookmark_or_session(b)
+                self.add_sidebar_item(b)
         self.lw_sidebar.currentItemChanged.connect(self.on_lw_sidebar_clicked)
     
+    def init_drivers(self):
+        self.lw_sidebar.clear()
+        if self.isWindowsOS:
+            drivers = QDir.drives()
+            for d in drivers:
+                self.add_sidebar_item(d.absoluteFilePath())
+        else:
+#             system('x-terminal-emulator --working-directory={} &'.format(self.le_path.text()))
+            pass
     def init_session(self):
         print(self.session_list)
         self.lw_sidebar.clear()
         if self.session_list:
             for b in self.session_list:
-                self.add_bookmark_or_session(b)
+                self.add_sidebar_item(b)
         self.lw_sidebar.currentItemChanged.connect(self.on_lw_sidebar_clicked)
         
     def init_toolbar(self):
         self.toolBar.addAction(QIcon(get_file_realpath("data/list-add.png")),"新增")
         self.toolBar.addAction(QIcon(get_file_realpath("data/list-remove.png")),"删除")
         self.toolBar.addAction(QIcon(get_file_realpath("data/go-home.png")),"主页")
+        self.toolBar.addAction(QIcon(get_file_realpath("data/device.png")),"设备")
         self.toolBar.addAction(QIcon(get_file_realpath("data/bookmark-book.png")),"收藏夹")
         self.toolBar.addAction(QIcon(get_file_realpath("data/edit-copy.png")),"标签")
         self.toolBar.addAction(QIcon(get_file_realpath("data/folder.png")),"显示文件夹").setCheckable(True)
@@ -70,8 +85,12 @@ class kdFileFinder(QMainWindow):
         self.toolBar.addAction(QIcon(get_file_realpath("data/go-up.png")),"返回上层")
         self.toolBar.actionTriggered[QAction].connect(self.on_toolBar_clicked)
 
-    def add_bookmark_or_session(self,path):
-            item = QListWidgetItem(basename(path))
+    def add_sidebar_item(self,path):
+            item = None
+            if not basename(path):
+                item = QListWidgetItem(path)
+            else :
+                item = QListWidgetItem(basename(path))
             item.setData(-1,path)
             self.lw_sidebar.addItem(item)
     def go_home(self):
@@ -93,9 +112,23 @@ class kdFileFinder(QMainWindow):
         elif action_text == "主页" :
             self.go_home()
         elif action_text == "终端" :
-            system('x-terminal-emulator --working-directory={} &'.format(self.le_path.text()))
+            if self.isWindowsOS:
+                startfile("cmd.exe")
+            else:
+                system('x-terminal-emulator --working-directory={} &'.format(self.le_path.text()))
+        elif action_text == "设备" :
+            self.lb_sidebar.setText(action_text)
+            self.init_drivers()
         elif action_text == "我的电脑" :
-            system('xdg-open ' + self.le_path.text())
+            if self.isWindowsOS:
+                print("explorer.exe '" + self.le_path.text() +"'")
+                try:
+                    startfile(self.le_path.text())
+#                     system("start C:\Users\bkd")
+                except Exception as e:
+                    print(str(e))
+            else:
+                system('xdg-open ' + self.le_path.text())
         elif action_text == "返回上层" :
             paren_dir = dirname(self.le_path.text()) 
             self.le_path.setText(paren_dir)
@@ -117,11 +150,11 @@ class kdFileFinder(QMainWindow):
                 self.fileSystemModel.setFilter(self.fileFilter)
         elif action_text == "新增" :
             if self.lb_sidebar.text() == "收藏夹" :
-                self.add_bookmark_or_session(self.le_path.text())
+                self.add_sidebar_item(self.le_path.text())
                 kdconfig.list_add("global", "bookmark", self.le_path.text())
             elif self.lb_sidebar.text() == "标签" :
                 self.session_list.add(self.le_path.text())
-                self.add_bookmark_or_session(self.le_path.text())
+                self.add_sidebar_item(self.le_path.text())
                 print(self.session_list)
         elif action_text == "删除" :
             if self.lb_sidebar.text() == "收藏夹" :
@@ -161,10 +194,10 @@ class kdFileFinder(QMainWindow):
                 self.on_pb_load_path_clicked()
         elif qtype == 6 :
                 curKey = qevent.key()
-                print("按下：" + str(qevent.key()))
-                if curKey == Qt.Key_M :
-                    self.last_open_dir.append(self.le_path)
-                    print(self.last_open_dir)
+#                 print("按下：" + str(qevent.key()))
+#                 if curKey == Qt.Key_M :
+#                     self.last_open_dir.append(self.le_path)
+#                     print(self.last_open_dir)
         return False
     
     @pyqtSlot()
@@ -189,19 +222,21 @@ class kdFileFinder(QMainWindow):
         cur_item1 = self.fileSystemModel.itemData(cur_item_index)
         cur_item = cur_item1[0]
         sub_path = join(self.le_path.text(),cur_item)
-        print("hihidb" + sub_path)
         if isfile(sub_path) :
             self.last_open_file.add(sub_path)
-            subprocess.call(["xdg-open", sub_path])
+            if self.isWindowsOS :
+                startfile(sub_path)
+            else :
+                subprocess.call(["xdg-open", sub_path])
             self.showMinimized()
     
-    def keyPressEvent(self, event):
-        curKey = event.key()
-        print("按下：" + str(event.key()))
-        if curKey == Qt.Key_M:
-            self.last_open_dir.append(self.le_path)
-            print(self.last_open_dir)
-        return False
+#     def keyPressEvent(self, event):
+#         curKey = event.key()
+#         print("按下：" + str(event.key()))
+#         if curKey == Qt.Key_M:
+#             self.last_open_dir.append(self.le_path)
+#             print(self.last_open_dir)
+#         return False
 def main():
     app = QApplication(sys.argv)
     win = kdFileFinder()
