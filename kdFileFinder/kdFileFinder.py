@@ -47,6 +47,7 @@ class kdFileFinder(QMainWindow):
         self.last_open_file = set()
         
         self.isWindowsOS = sys.platform =="win32"
+        self.lw_sidebar.itemDoubleClicked.connect(self.on_lw_sidebar_dbclicked)
     def init_bookmark(self):
         self.lw_sidebar.clear()
         if self.bookmark_list:
@@ -78,6 +79,7 @@ class kdFileFinder(QMainWindow):
         self.toolBar.addAction(QIcon(get_file_realpath("data/device.png")),"设备")
         self.toolBar.addAction(QIcon(get_file_realpath("data/bookmark-book.png")),"收藏夹")
         self.toolBar.addAction(QIcon(get_file_realpath("data/edit-copy.png")),"标签")
+        self.toolBar.addAction(QIcon(get_file_realpath("data/history-time.png")),"最近打开的文件")
         self.toolBar.addAction(QIcon(get_file_realpath("data/folder.png")),"显示文件夹").setCheckable(True)
         self.toolBar.addAction(QIcon(get_file_realpath("data/eye.png")),"显示隐藏文件").setCheckable(True)
         self.toolBar.addAction(QIcon(get_file_realpath("data/terminal.png")),"终端")
@@ -109,6 +111,11 @@ class kdFileFinder(QMainWindow):
         elif action_text == "标签" :
             self.lb_sidebar.setText(action_text)
             self.init_session()
+        elif action_text == "最近打开的文件" :
+            self.lb_sidebar.setText(action_text)
+            self.lw_sidebar.clear()
+            for f in self.last_open_file :
+                self.add_sidebar_item(f)
         elif action_text == "主页" :
             self.go_home()
         elif action_text == "终端" :
@@ -171,8 +178,19 @@ class kdFileFinder(QMainWindow):
         cur_item = self.lw_sidebar.currentItem()
         if cur_item :
             cur_item_data = cur_item.data(-1)
-            self.le_path.setText(cur_item_data)
-            self.on_pb_load_path_clicked()
+            if  self.lb_sidebar.text() == "最近打开的文件":
+                self.statusbar.showMessage(cur_item_data)
+            else:                
+                self.le_path.setText(cur_item_data)
+                self.on_pb_load_path_clicked()
+    @pyqtSlot()
+    def on_lw_sidebar_dbclicked(self):
+        cur_item = self.lw_sidebar.currentItem()
+        if cur_item :
+            cur_item_data = cur_item.data(-1)
+            self.statusbar.showMessage(cur_item_data)
+            if self.isWindowsOS :
+                startfile(cur_item_data)
     @pyqtSlot()
     def on_pb_load_path_clicked(self):
         root = self.fileSystemModel.setRootPath(self.le_path.text())
