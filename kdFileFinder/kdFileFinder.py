@@ -9,15 +9,20 @@ Created on 2019年3月7日
 import sys
 import subprocess
 from os.path import join,dirname,isdir,isfile, basename 
-from os import system, startfile, chdir
+from os import system, chdir
+from PyQt5.Qt import QCursor
+try:
+    from os import startfile
+except Exception as e:
+    pass
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot,QDir,Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import  QMainWindow,QApplication,QFileSystemModel,QAction,QListWidgetItem
+from PyQt5.QtWidgets import  QMainWindow,QApplication,QFileSystemModel,QAction,QListWidgetItem,QMenu
 from .fileutil import get_file_realpath
 from . import kdconfig
 from . import bookmark
-from _ast import Try
+from .menu import toolbar_menu,file_menu
 
 class kdFileFinder(QMainWindow):
     def __init__(self):
@@ -48,6 +53,11 @@ class kdFileFinder(QMainWindow):
         
         self.isWindowsOS = sys.platform =="win32"
         self.lw_sidebar.itemDoubleClicked.connect(self.on_lw_sidebar_dbclicked)
+        
+        self.main_menu = QMenu()
+        self.file_menu = QMenu()
+        self.folder_menu = QMenu()
+        self.toolbar_menu = toolbar_menu()
     def init_bookmark(self):
         self.lw_sidebar.clear()
         if self.bookmark_list:
@@ -85,6 +95,7 @@ class kdFileFinder(QMainWindow):
         self.toolBar.addAction(QIcon(get_file_realpath("data/terminal.png")),"终端")
         self.toolBar.addAction(QIcon(get_file_realpath("data/view-list-tree.png")),"我的电脑")
         self.toolBar.addAction(QIcon(get_file_realpath("data/go-up.png")),"返回上层")
+        self.toolBar.addAction(QIcon(get_file_realpath("data/menu.png")),"菜单")
         self.toolBar.actionTriggered[QAction].connect(self.on_toolBar_clicked)
 
     def add_sidebar_item(self,path):
@@ -111,6 +122,10 @@ class kdFileFinder(QMainWindow):
         elif action_text == "标签" :
             self.lb_sidebar.setText(action_text)
             self.init_session()
+        elif action_text == "菜单" :
+            action = self.main_menu.exec_(toolbar_menu.menu_item,QCursor.pos())
+            if action:
+                self.toolbar_menu.handle_action(action)
         elif action_text == "最近打开的文件" :
             self.lb_sidebar.setText(action_text)
             self.lw_sidebar.clear()
@@ -206,6 +221,9 @@ class kdFileFinder(QMainWindow):
             
             if i.isValid() :
                 print("鼠标在:" ,i.isValid())
+                action = self.file_menu.exec_(file_menu.menu_item,QCursor.pos())
+                if action:
+                    self.file_menu.handle_action(action)
             else:
                 parent_dir = dirname(self.le_path.text()) 
                 print("单击了右键" + parent_dir)
@@ -262,7 +280,7 @@ class kdFileFinder(QMainWindow):
 #         if curKey == Qt.Key_M:
 #             self.last_open_dir.append(self.le_path)
 #             print(self.last_open_dir)
-#         return False
+    #         return False
 def main():
     app = QApplication(sys.argv)
     win = kdFileFinder()
