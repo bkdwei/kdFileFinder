@@ -9,7 +9,7 @@ Created on 2019年3月7日
 import sys
 import subprocess
 from os.path import join,dirname,isdir,isfile, basename 
-from os import system, startfile
+from os import system, startfile, chdir
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot,QDir,Qt
 from PyQt5.QtGui import QIcon
@@ -120,7 +120,8 @@ class kdFileFinder(QMainWindow):
             self.go_home()
         elif action_text == "终端" :
             if self.isWindowsOS:
-                startfile("cmd.exe")
+                chdir(self.le_path.text())
+                startfile("cmd.exe" )
             else:
                 system('x-terminal-emulator --working-directory={} &'.format(self.le_path.text()))
         elif action_text == "设备" :
@@ -206,10 +207,17 @@ class kdFileFinder(QMainWindow):
             if i.isValid() :
                 print("鼠标在:" ,i.isValid())
             else:
-                paren_dir = dirname(self.le_path.text()) 
-                print("单击了右键" + paren_dir)
-                self.le_path.setText(paren_dir)
-                self.on_pb_load_path_clicked()
+                parent_dir = dirname(self.le_path.text()) 
+                print("单击了右键" + parent_dir)
+                if parent_dir == self.le_path.text() and self.isWindowsOS  :
+#                     print(self.fileSystemModel.rootDirectory().absolutePath())
+#                     root = self.fileSystemModel.setRootPath(home_path)
+#                     self.lw_main.setModel(self.fileSystemModel)
+#                     self.init_drivers()
+                    pass
+                else :
+                    self.le_path.setText(parent_dir)
+                    self.on_pb_load_path_clicked()
         elif qtype == 6 :
                 curKey = qevent.key()
 #                 print("按下：" + str(qevent.key()))
