@@ -17,28 +17,28 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="pb_add_script">
        <property name="text">
         <string>新增</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="pb_edit_script">
        <property name="text">
         <string>编辑</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="pb_delete_script">
        <property name="text">
         <string>删除</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_4">
+      <widget class="QPushButton" name="pb_find_script">
        <property name="text">
         <string>查询</string>
        </property>
@@ -52,7 +52,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QWidget" name="formLayoutWidget">
-      <layout class="QFormLayout" name="formLayout">
+      <layout class="QFormLayout" name="fl_search">
        <item row="1" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
