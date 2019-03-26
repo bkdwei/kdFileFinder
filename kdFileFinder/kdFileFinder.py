@@ -58,6 +58,7 @@ class kdFileFinder(QMainWindow):
         self.file_menu = QMenu()
         self.folder_menu = QMenu()
         self.toolbar_menu = toolbar_menu()
+        self.file_popup_menu = file_menu()
     def init_bookmark(self):
         self.lw_sidebar.clear()
         if self.bookmark_list:
@@ -220,10 +221,12 @@ class kdFileFinder(QMainWindow):
             i = self.lw_main.indexAt(qevent.pos())
             
             if i.isValid() :
-                print("鼠标在:" ,i.isValid())
-                action = self.file_menu.exec_(file_menu.menu_item,QCursor.pos())
+                print("鼠标选中：" ,i.row())
+                filePath = self.fileSystemModel.filePath(i) 
+                print(filePath)
+                action = self.file_menu.exec_(self.file_popup_menu.menu_item,QCursor.pos())
                 if action:
-                    self.file_menu.handle_action(action)
+                    self.file_popup_menu.handle_action(action,filePath)
             else:
                 parent_dir = dirname(self.le_path.text()) 
                 print("单击了右键" + parent_dir)
