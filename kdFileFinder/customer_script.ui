@@ -18,10 +18,10 @@
     <layout class="QFormLayout" name="formLayout"/>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="lineEdit"/>
+    <widget class="QLineEdit" name="le_name"/>
    </item>
    <item row="2" column="0">
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="pb_path">
      <property name="text">
       <string>脚本路径</string>
      </property>
@@ -31,10 +31,10 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QLineEdit" name="lineEdit_2"/>
+    <widget class="QLineEdit" name="le_path"/>
    </item>
    <item row="4" column="1">
-    <widget class="QRadioButton" name="radioButton_2">
+    <widget class="QRadioButton" name="rb_other_filetype">
      <property name="text">
       <string>指定文件类型，如(*.txt;*.pdf)</string>
      </property>
@@ -48,7 +48,7 @@
     </widget>
    </item>
    <item row="6" column="1">
-    <widget class="QLineEdit" name="lineEdit_3"/>
+    <widget class="QLineEdit" name="le_filetype"/>
    </item>
    <item row="7" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -74,7 +74,7 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QRadioButton" name="radioButton">
+    <widget class="QRadioButton" name="rb_cur_item">
      <property name="text">
       <string>当前选中项目</string>
      </property>

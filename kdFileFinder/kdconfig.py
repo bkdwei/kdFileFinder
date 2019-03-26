@@ -29,3 +29,7 @@ def init_list(section,option):
         if  string_option:
             option_list = json.loads(string_option)
     return option_list
+def dict_add(section, option, value):
+    if not cf.has_section(section) :
+        cf.add_section(section)
+    dict
