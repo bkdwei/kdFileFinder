@@ -1,9 +1,9 @@
-import os
 import configparser
 import json
-from .fileutil import check_and_create
+from .fileutil import check_and_create,get_file_realpath
 
-config_file = os.path.join(os.path.expanduser('~') , ".config/kdFileFinder/config.ini")
+# config_file = os.path.join(os.path.expanduser('~') , ".config/kdFileFinder/config.ini")
+config_file = get_file_realpath("data/config.ini")
 check_and_create(config_file)
 cf = configparser.ConfigParser()
 cf.read(config_file)

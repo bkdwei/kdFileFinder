@@ -4,7 +4,7 @@ Created on 2019年3月25日
 @author: bkd
 '''
 import importlib
-from os.path import splitext
+from os.path import splitext, dirname
 from PyQt5.QtWidgets import  QDialog,QListWidgetItem,QAction
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot
@@ -56,9 +56,9 @@ class script_manager(QDialog):
 #         clazz=plugin.getPluginClass()
         o=script_class()
 #         o.setFather(self, self.kdpad)
-        result_dict = o.execute(filePath)
+        self.temp_variable["cur_path"] = dirname(filePath)
+        result_dict = o.execute(filePath,self.temp_variable)
         print(result_dict)
-        self.temp_variable.update(result_dict)
         print("temp_variable:" , self.temp_variable)
     def get_file_menu_item(self):
             sc_items = self.script_dict.items()
