@@ -5,14 +5,15 @@ Created on 2019年3月25日
 '''
 import importlib
 from os.path import splitext, dirname
-from PyQt5.QtWidgets import  QDialog,QListWidgetItem,QAction
+from PyQt5.QtWidgets import  QDialog,QListWidgetItem,QAction, QMessageBox
 from PyQt5.uic import loadUi
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot,pyqtSignal
 from .fileutil import get_file_realpath
 from .customer_script import customer_script
 from . import kdconfig
 
 class script_manager(QDialog):
+    show_script_result_signal = pyqtSignal(str)
     def __init__(self):
         super().__init__()
         loadUi(get_file_realpath("script_manager.ui"), self)
@@ -57,9 +58,12 @@ class script_manager(QDialog):
         o=script_class()
 #         o.setFather(self, self.kdpad)
         self.temp_variable["cur_path"] = dirname(filePath)
-        result_dict = o.execute(filePath,self.temp_variable)
-        print(result_dict)
+        self.temp_variable["cur_item"] = filePath
+        o.execute(self.temp_variable)
+#         if self.script_variable["script_result_body"] :
         print("temp_variable:" , self.temp_variable)
+#             QMessageBox.information(self,"粘贴文件",self.script_variable["script_result_body"])
+#             self.show_script_result_signal.emit(self.script_variable["statusbar_msg"])
     def get_file_menu_item(self):
             sc_items = self.script_dict.items()
             actions = set()

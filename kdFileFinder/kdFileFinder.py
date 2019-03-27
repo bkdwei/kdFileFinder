@@ -284,6 +284,8 @@ class kdFileFinder(QMainWindow):
 #             self.last_open_dir.append(self.le_path)
 #             print(self.last_open_dir)
     #         return False
+    def show_statusbar_msg(self,msg):
+         self.statusbar.showMessage(msg)
 def main():
     app = QApplication(sys.argv)
     win = kdFileFinder()
