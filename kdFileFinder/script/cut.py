@@ -3,7 +3,7 @@ Created on 2019年3月26日
 
 @author: bkd
 '''
-class copy:
+class cut:
     def execute(self,cur_item):
 #         待修改
-        return {"copy_item":cur_item}
+        return {"cut_item":cur_item}
