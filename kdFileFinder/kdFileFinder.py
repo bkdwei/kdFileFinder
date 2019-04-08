@@ -224,46 +224,35 @@ class kdFileFinder(QMainWindow):
 #         print("qtype",qtype)
 #         print("qobject",qobject)
         if qtype == 82 :
-            if self.lw_main.selectionMode() != QAbstractItemView.ExtendedSelection:
-                i = self.lw_main.indexAt(qevent.pos())
-            
-                if i.isValid() :
-                    print("鼠标选中：" ,i.row())
-                    filePath = self.fileSystemModel.filePath(i) 
-                    print(filePath)
+            counter = len(self.lw_main.selectedIndexes())
+#             选中单个文件
+            if counter == 1:
+                single_file = self.fileSystemModel.itemData(self.lw_main.currentIndex())[0]
                 action = self.file_menu.exec_(self.file_popup_menu.menu_item,QCursor.pos())
                 if action:
-                    self.file_popup_menu.handle_action(action,self.le_path.text(),filePath)
-            elif self.lw_main.selectionMode() == QAbstractItemView.ExtendedSelection:
+                    self.file_popup_menu.handle_action(action,self.le_path.text(),[single_file])
+#             选中多个文件
+            elif counter > 1:
                 action = self.file_menu.exec_(self.file_popup_menu.menu_item,QCursor.pos())
                 if action:
                     file_list = [self.fileSystemModel.itemData(i)[0] for i in self.lw_main.selectedIndexes()]
-                    self.file_popup_menu.handle_action(action,self.le_path.text().strip(),file_list)
+                    self.file_popup_menu.handle_action(action,self.le_path.text(),file_list)
+#             选中空白处，返回上层目录
             else:
                 parent_dir = dirname(self.le_path.text()) 
-                print("单击了右键" + parent_dir)
                 if parent_dir == self.le_path.text() and self.isWindowsOS  :
-#                     print(self.fileSystemModel.rootDirectory().absolutePath())
-#                     root = self.fileSystemModel.setRootPath(home_path)
-#                     self.lw_main.setModel(self.fileSystemModel)
-#                     self.init_drivers()
                     pass
                 else :
                     self.le_path.setText(parent_dir)
                     self.on_pb_load_path_clicked()
-        elif qtype == 6 :
-                curKey = qevent.key()
-#                 print("按下：" + str(qevent.key()))
-#                 if curKey == Qt.Key_M :
-#                     self.last_open_dir.append(self.le_path)
-#                     print(self.last_open_dir)
         return False
     
     @pyqtSlot()
     def on_lw_main_clicked(self):
-        if self.lw_main.selectionMode() == QAbstractItemView.ExtendedSelection:
+#         不连续的多选模式，不处理文件和文件夹，只选中当前项目
+        if self.lw_main.selectionMode() == Qt.ControlModifier:
             return
-        
+            
         cur_item_index = self.lw_main.currentIndex()
         cur_item1 = self.fileSystemModel.itemData(cur_item_index)
         cur_item = cur_item1[0]
@@ -304,17 +293,20 @@ class kdFileFinder(QMainWindow):
         
 #     拦截快捷键
     def keyPressEvent(self, event):
-        key = event.key()
+#         key = event.key()
         # ~ print("按下：" + str(event.key()))
         if event.modifiers()== Qt.ControlModifier :
             self.lw_main.setSelectionMode(QAbstractItemView.ExtendedSelection)
             print("duoxuan")
-    def keyReleaseEvent(self, event):
-        key = event.key()
-        print("按下：" + str(event.key()))
-        if key == Qt.Key_Control:
-            self.lw_main.setSelectionMode(QAbstractItemView.SingleSelection)
-            print("danxuan")
+        if event.modifiers()== Qt.ShiftModifier :
+            self.lw_main.setSelectionMode(QAbstractItemView.ContiguousSelection)
+            print("shit 多选")
+#     def keyReleaseEvent(self, event):
+#         key = event.key()
+#         print("按下：" + str(event.key()))
+#         if key == Qt.Key_Control:
+#             self.lw_main.setSelectionMode(QAbstractItemView.SingleSelection)
+#             print("danxuan")
         
 def main():
     app = QApplication(sys.argv)
