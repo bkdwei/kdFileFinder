@@ -295,6 +295,8 @@ class kdFileFinder(QMainWindow):
         if event.modifiers()== Qt.ControlModifier and key == Qt.Key_C :
             file_list = [self.fileSystemModel.itemData(i)[0] for i in self.lw_main.selectedIndexes()]
             self.script_manager.run_script("复制",self.le_path.text(),file_list)
+        elif event.modifiers()== Qt.ControlModifier and key == Qt.Key_V :
+            self.script_manager.run_script("粘贴",self.le_path.text(),None)
         elif event.modifiers()== Qt.ControlModifier :
             self.lw_main.setSelectionMode(QAbstractItemView.ExtendedSelection)
             print("duoxuan")
