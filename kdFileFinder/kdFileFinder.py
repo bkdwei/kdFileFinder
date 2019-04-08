@@ -25,6 +25,7 @@ from . import kdconfig
 from . import bookmark
 from .menu import toolbar_menu,file_menu
 from .exception_handler import global_exception_hander
+from .script_manager import script_manager
 
 class kdFileFinder(QMainWindow):
     def __init__(self):
@@ -65,6 +66,8 @@ class kdFileFinder(QMainWindow):
         self.folder_menu = QMenu()
         self.toolbar_menu = toolbar_menu()
         self.file_popup_menu = file_menu()
+        
+        self.script_manager = script_manager()
     def init_bookmark(self):
         self.lw_sidebar.clear()
         if self.bookmark_list:
@@ -225,18 +228,12 @@ class kdFileFinder(QMainWindow):
 #         print("qobject",qobject)
         if qtype == 82 :
             counter = len(self.lw_main.selectedIndexes())
-#             选中单个文件
-            if counter == 1:
-                single_file = self.fileSystemModel.itemData(self.lw_main.currentIndex())[0]
-                action = self.file_menu.exec_(self.file_popup_menu.menu_item,QCursor.pos())
-                if action:
-                    self.file_popup_menu.handle_action(action,self.le_path.text(),[single_file])
-#             选中多个文件
-            elif counter > 1:
+#             处理选中的文件
+            if counter >= 1:
                 action = self.file_menu.exec_(self.file_popup_menu.menu_item,QCursor.pos())
                 if action:
                     file_list = [self.fileSystemModel.itemData(i)[0] for i in self.lw_main.selectedIndexes()]
-                    self.file_popup_menu.handle_action(action,self.le_path.text(),file_list)
+                    self.script_manager.run_script(action.text(),self.le_path.text(),file_list)
 #             选中空白处，返回上层目录
             else:
                 parent_dir = dirname(self.le_path.text()) 
@@ -293,9 +290,12 @@ class kdFileFinder(QMainWindow):
         
 #     拦截快捷键
     def keyPressEvent(self, event):
-#         key = event.key()
+        key = event.key()
         # ~ print("按下：" + str(event.key()))
-        if event.modifiers()== Qt.ControlModifier :
+        if event.modifiers()== Qt.ControlModifier and key == Qt.Key_C :
+            file_list = [self.fileSystemModel.itemData(i)[0] for i in self.lw_main.selectedIndexes()]
+            self.script_manager.run_script("复制",self.le_path.text(),file_list)
+        elif event.modifiers()== Qt.ControlModifier :
             self.lw_main.setSelectionMode(QAbstractItemView.ExtendedSelection)
             print("duoxuan")
         if event.modifiers()== Qt.ShiftModifier :

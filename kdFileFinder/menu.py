@@ -25,6 +25,3 @@ class file_menu:
         self.menu_item = self.dl_script_manage.get_file_menu_item()
     def get_menu_list(self):
         pass
-    def handle_action(self,action,filePath,file_list):
-        text = action.text()
-        self.dl_script_manage.run_script(text,filePath,file_list)
