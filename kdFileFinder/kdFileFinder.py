@@ -289,11 +289,11 @@ class kdFileFinder(QMainWindow):
     #         return False
     def show_statusbar_msg(self,msg):
         self.statusbar.showMessage(msg)
-        
+    
 #     拦截快捷键
     def keyPressEvent(self, event):
         key = event.key()
-        # ~ print("按下：" + str(event.key()))
+        print("按下：" + str(event.key()))
         if event.modifiers()== Qt.ControlModifier and key == Qt.Key_C :
             file_list = [self.fileSystemModel.itemData(i)[0] for i in self.lw_main.selectedIndexes()]
             self.script_manager.run_script("复制",self.le_path.text(),file_list)
@@ -302,6 +302,14 @@ class kdFileFinder(QMainWindow):
         elif key == Qt.Key_F2 :
             file_list = [self.fileSystemModel.itemData(self.lw_main.currentIndex())[0]]
             self.script_manager.run_script("重命名",self.le_path.text(),file_list)
+        elif event.modifiers()== Qt.ControlModifier and key == Qt.Key_D:
+            self.lb_sidebar.setText("收藏夹")
+            self.add_sidebar_item(self.le_path.text())
+            kdconfig.list_add("global", "bookmark", self.le_path.text())
+        elif event.modifiers()== Qt.ControlModifier and key == Qt.Key_T:
+            self.lb_sidebar.setText("标签")
+            self.session_list.add(self.le_path.text())
+            self.add_sidebar_item(self.le_path.text()) 
         elif event.modifiers()== Qt.ControlModifier and key == None:
             self.lw_main.setSelectionMode(QAbstractItemView.ExtendedSelection)
             print("duoxuan")
