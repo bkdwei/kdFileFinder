@@ -82,6 +82,8 @@ class kdFileFinder(QMainWindow):
             for d in drivers:
                 self.add_sidebar_item(d.absoluteFilePath())
         else:
+            self.le_path.setText("/")
+            self.on_pb_load_path_clicked()
 #             system('x-terminal-emulator --working-directory={} &'.format(self.le_path.text()))
             pass
     def init_session(self):
