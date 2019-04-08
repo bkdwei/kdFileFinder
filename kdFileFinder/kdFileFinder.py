@@ -10,7 +10,7 @@ import sys
 import subprocess
 from os.path import join,dirname,isdir,isfile, basename 
 from os import system, chdir
-from PyQt5.Qt import QCursor
+from PyQt5.Qt import QCursor,QAbstractItemView
 try:
     from os import startfile
 except Exception as e:
@@ -19,16 +19,22 @@ from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot,QDir,Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import  QMainWindow,QApplication,QFileSystemModel,QAction,QListWidgetItem,QMenu
+
 from .fileutil import get_file_realpath
 from . import kdconfig
 from . import bookmark
 from .menu import toolbar_menu,file_menu
+from .exception_handler import global_exception_hander
 
 class kdFileFinder(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi(get_file_realpath("kdFileFinder.ui"), self)
         self.setWindowIcon(QIcon(get_file_realpath('data/kdFileFinder.png')))
+        
+        self.exception_handler = global_exception_hander()
+        self.exception_handler.patch_excepthook()
+        
         self.lw_main.clicked.connect(self.on_lw_main_clicked)
         self.lw_main.doubleClicked.connect(self.on_lw_main_dbclicked)
         self.lw_main.installEventFilter(self)
@@ -218,15 +224,21 @@ class kdFileFinder(QMainWindow):
 #         print("qtype",qtype)
 #         print("qobject",qobject)
         if qtype == 82 :
-            i = self.lw_main.indexAt(qevent.pos())
+            if self.lw_main.selectionMode() != QAbstractItemView.ExtendedSelection:
+                i = self.lw_main.indexAt(qevent.pos())
             
-            if i.isValid() :
-                print("鼠标选中：" ,i.row())
-                filePath = self.fileSystemModel.filePath(i) 
-                print(filePath)
+                if i.isValid() :
+                    print("鼠标选中：" ,i.row())
+                    filePath = self.fileSystemModel.filePath(i) 
+                    print(filePath)
                 action = self.file_menu.exec_(self.file_popup_menu.menu_item,QCursor.pos())
                 if action:
-                    self.file_popup_menu.handle_action(action,filePath)
+                    self.file_popup_menu.handle_action(action,self.le_path.text(),filePath)
+            elif self.lw_main.selectionMode() == QAbstractItemView.ExtendedSelection:
+                action = self.file_menu.exec_(self.file_popup_menu.menu_item,QCursor.pos())
+                if action:
+                    file_list = [self.fileSystemModel.itemData(i)[0] for i in self.lw_main.selectedIndexes()]
+                    self.file_popup_menu.handle_action(action,self.le_path.text().strip(),file_list)
             else:
                 parent_dir = dirname(self.le_path.text()) 
                 print("单击了右键" + parent_dir)
@@ -249,6 +261,9 @@ class kdFileFinder(QMainWindow):
     
     @pyqtSlot()
     def on_lw_main_clicked(self):
+        if self.lw_main.selectionMode() == QAbstractItemView.ExtendedSelection:
+            return
+        
         cur_item_index = self.lw_main.currentIndex()
         cur_item1 = self.fileSystemModel.itemData(cur_item_index)
         cur_item = cur_item1[0]
@@ -285,7 +300,22 @@ class kdFileFinder(QMainWindow):
 #             print(self.last_open_dir)
     #         return False
     def show_statusbar_msg(self,msg):
-         self.statusbar.showMessage(msg)
+        self.statusbar.showMessage(msg)
+        
+#     拦截快捷键
+    def keyPressEvent(self, event):
+        key = event.key()
+        # ~ print("按下：" + str(event.key()))
+        if event.modifiers()== Qt.ControlModifier :
+            self.lw_main.setSelectionMode(QAbstractItemView.ExtendedSelection)
+            print("duoxuan")
+    def keyReleaseEvent(self, event):
+        key = event.key()
+        print("按下：" + str(event.key()))
+        if key == Qt.Key_Control:
+            self.lw_main.setSelectionMode(QAbstractItemView.SingleSelection)
+            print("danxuan")
+        
 def main():
     app = QApplication(sys.argv)
     win = kdFileFinder()

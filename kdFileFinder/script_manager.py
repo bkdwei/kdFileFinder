@@ -47,7 +47,7 @@ class script_manager(QDialog):
         self.cs.edit(script)
         self.on_pb_add_script_clicked()
          
-    def loadPlugin(self, filename,filePath):
+    def loadPlugin(self, filename,filePath,file_list):
         print("loading plugin:" + 'kdFileFinder.script.' + splitext(filename)[0])
 #         plugin=__import__(get_file_realpath("script/"+filename), fromlist=[filename],level=0)
         
@@ -57,8 +57,8 @@ class script_manager(QDialog):
 #         clazz=plugin.getPluginClass()
         o=script_class()
 #         o.setFather(self, self.kdpad)
-        self.temp_variable["cur_path"] = dirname(filePath)
-        self.temp_variable["cur_item"] = filePath
+        self.temp_variable["cur_path"] = filePath
+        self.temp_variable["file_list"] = file_list
         try:
             o.execute(self.temp_variable)
         except Exception as e:
@@ -76,7 +76,7 @@ class script_manager(QDialog):
                     action = QAction(sc[0])
                     actions.add(action)
             return actions
-    def run_script(self,script_name,filePath):
+    def run_script(self,script_name,filePath,file_list):
         script_path = self.script_dict[script_name]["path"]
         print("script_path:" + script_path)
-        self.loadPlugin(script_path,filePath)
+        self.loadPlugin(script_path,filePath,file_list)

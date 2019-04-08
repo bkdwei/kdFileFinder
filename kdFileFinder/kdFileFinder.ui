@@ -43,13 +43,6 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="1" rowspan="2">
-     <widget class="QListView" name="lw_main">
-      <property name="resizeMode">
-       <enum>QListView::Adjust</enum>
-      </property>
-     </widget>
-    </item>
     <item row="2" column="0">
      <widget class="QListWidget" name="lw_sidebar">
       <property name="sizePolicy">
@@ -63,6 +56,13 @@
         <width>100</width>
         <height>16777215</height>
        </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" rowspan="2">
+     <widget class="QListView" name="lw_main">
+      <property name="resizeMode">
+       <enum>QListView::Adjust</enum>
       </property>
      </widget>
     </item>
