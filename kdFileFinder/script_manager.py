@@ -59,7 +59,11 @@ class script_manager(QDialog):
 #         o.setFather(self, self.kdpad)
         self.temp_variable["cur_path"] = dirname(filePath)
         self.temp_variable["cur_item"] = filePath
-        o.execute(self.temp_variable)
+        try:
+            o.execute(self.temp_variable)
+        except Exception as e:
+            print("检测异常",e)
+            QMessageBox.information(self, "系统异常",   str(e), QMessageBox.Ok)
 #         if self.script_variable["script_result_body"] :
         print("temp_variable:" , self.temp_variable)
 #             QMessageBox.information(self,"粘贴文件",self.script_variable["script_result_body"])

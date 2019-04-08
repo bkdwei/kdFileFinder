@@ -3,3 +3,4 @@ include LICENSE
 include install_script.py
 include kdFileFinder/*.ui
 include kdFileFinder/data/*.png
+include kdFileFinder/data/config.ini

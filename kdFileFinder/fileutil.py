@@ -16,11 +16,11 @@ def check_and_create(absolute_file_path):
         os.makedirs(path)
     # 检查文件
     if os.path.exists(absolute_file_path) is not True:
-        with open(absolute_file_path, "w+"):
+        with open(absolute_file_path, "w+",encoding="utf-8"):
             pass
     elif os.path.isfile(absolute_file_path) is not True:
         os.removedirs(absolute_file_path)
-        with open(absolute_file_path, "w+"):
+        with open(absolute_file_path, "w+",encoding="utf-8"):
             pass
 
 def check_and_create_dir(absolute_dir_path):

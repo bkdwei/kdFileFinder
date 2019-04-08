@@ -11,7 +11,7 @@ with open("README.md", "r",encoding="utf-8") as fh:
 setup(
 #     固定部分
     name="kdFileFinder",
-    version="1.0.0",
+    version="1.0.1",
     author="bkdwei",
     author_email="bkdwei@163.com",
     maintainer="韦坤东",
