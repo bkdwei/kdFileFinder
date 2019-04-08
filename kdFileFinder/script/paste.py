@@ -7,11 +7,20 @@ from shutil import copy2,copytree,rmtree
 from os.path import basename,join,exists
 from os.path import isfile,isdir
 from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtGui import QGuiApplication
 
 class paste(QMessageBox):
     def execute(self,script_variable):
-        cur_item = script_variable["copy_item"]
+        cur_item = script_variable["cur_item"]
         cur_path = script_variable["cur_path"]
+#         从其他文件管理利器读取复制的文件
+        if 2>1 :
+            clipboard = QGuiApplication.clipboard()
+            urls = clipboard.mimeData().urls()
+            print(type(urls))
+            for  x in urls:
+                print("从其他文件管理器获得待粘贴文件列表",x.path())
+            return
         already_exists = exists(join(cur_path,basename(cur_item)))
         
         if isfile(cur_item) :
