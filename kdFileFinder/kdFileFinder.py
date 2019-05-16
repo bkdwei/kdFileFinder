@@ -230,6 +230,16 @@ class kdFileFinder(QMainWindow):
 #         print("qobject",qobject)
         if qtype == 82 :
             counter = len(self.lw_main.selectedIndexes())
+            
+#             右键所在的位置又可能是空白处
+            if counter == 1 :
+                i = self.lw_main.indexAt(QCursor.pos())
+                if not i.isValid() :
+                    print("valid")
+                    counter = len(self.lw_main.selectedIndexes())
+                else :
+                    print("invalid")
+                
 #             处理选中的文件
             if counter >= 1:
                 action = self.file_menu.exec_(self.file_popup_menu.menu_item,QCursor.pos())
